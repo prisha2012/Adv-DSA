@@ -1,5 +1,8 @@
 import java.util.*;
-public class Cycleundirected {
+public class kosaraju {
+    
+
+
 
     static class Edge{
         int src;
@@ -125,7 +128,148 @@ public class Cycleundirected {
         return false;
 
     }
-    public static void main(String[] args) {
+    public static class pair implements Comparable<pair>{
+        int node;
+        int dist;
+        public pair(int n,int d){
+            this.node=n;
+            this.dist=d;
+        }
+        @Override
+        public int compareTo(pair p2){
+            return this.dist - p2.dist;
+        }
+    }
+    public static void dijkstra(ArrayList<Edge>[] graph,int src,int V){
+        PriorityQueue<pair> pq=new PriorityQueue<>();
+        int dist[]=new int[V];
+        boolean visited[]=new boolean[V];
+        for(int i=0;i<dist.length;i++){
+            if(i!=src){
+                dist[i]=Integer.MAX_VALUE;
+            }
+        }
+        pq.add(new pair(src,0));
+
+        while(!pq.isEmpty()){
+            pair curr=pq.remove();
+            if(!visited[curr.node]){
+                visited[curr.node]=true;
+                for(int i=0;i<graph[curr.node].size();i++){
+                    Edge e=graph[curr.node].get(i);
+                    int u=e.src;
+                    int v=e.dest;
+                    if(!visited[v] && dist[u]+e.wt < dist[v]){
+                        dist[v]=dist[u]+e.wt;
+                        pq.add(new pair(v,dist[v]));
+                    }
+            }
+        }
+    }
+    for(int i=0;i<dist.length;i++){
+        System.out.print(dist[i]+" ");
+    }
+
+    }
+    public static void bellmanFord(ArrayList<Edge>[] graph, int src, int V) {
+        int dist[] = new int[V];
+        for (int i = 0; i < V; i++) {
+            if (i != src) {
+                dist[i] = Integer.MAX_VALUE;
+            }
+        }
+        for(int k=0;k<V-1;k++){
+            for(int i=0;i<graph.length;i++){
+                for(int j=0;j<graph[i].size();j++){
+                    Edge e=graph[i].get(j);
+                    int u=e.src;
+                    int v=e.dest;
+                    int wt=e.wt;
+                    if(dist[u]!=Integer.MAX_VALUE && dist[u]+wt < dist[v]){
+                        dist[v]=dist[u]+wt;
+                    }
+                }
+            
+        }
+    }
+    for(int i=0;i<dist.length;i++){
+        System.out.print(dist[i]+" ");
+    }
+
+}
+public static void primsmst(ArrayList<Edge>[] graph,int V){
+    PriorityQueue<pair> pq=new PriorityQueue<>();
+    boolean visited[]=new boolean[V];
+    pq.add(new pair(0,0));
+    int finalcost=0;
+    while (!pq.isEmpty()) {
+        pair curr=pq.remove();
+        if(!visited[curr.node]){
+            visited[curr.node]=true;
+            finalcost+=curr.dist;
+            for(int i=0;i<graph[curr.node].size();i++){
+                Edge e=graph[curr.node].get(i);
+                if(!visited[e.dest]){
+                    pq.add(new pair(e.dest,e.wt));
+                }
+            }
+        
+    }
+}
+System.out.println("Final cost of MST: "+finalcost);
+}
+public static void kosarajuDFS(ArrayList<Edge>[] graph, int V) 
+{
+    Stack<Integer> stack = new Stack<>();
+    boolean visited[] = new boolean[V];
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            topsort1(graph,i,visited,stack);
+        }
+    }
+
+    ArrayList<Edge>[] transposedGraph = new ArrayList[V];
+    for (int i = 0; i < V; i++) {
+        visited[i] = false;
+        transposedGraph[i] = new ArrayList<>();
+    }
+    for (int i = 0; i < V; i++) {
+        for (Edge e : graph[i]){
+            transposedGraph[e.dest].add(new Edge(e.dest, e.src, e.wt));
+            
+        }
+    }
+    while(!stack.isEmpty()){
+        int curr=stack.pop();
+        if(!visited[curr]){
+            System.out.print("SCC: ");
+            dfs1(transposedGraph, visited, curr);
+            System.out.println();
+        }
+    }
+
+}
+public static void dfs1(ArrayList<Edge>[] graph, boolean visited[], int curr){
+    visited[curr] = true;
+    for(int i=0;i<graph[curr].size();i++){
+        Edge e=graph[curr].get(i);
+        if(!visited[e.dest]){
+            dfs1(graph, visited, e.dest);
+        }
+    }
+}
+public static void topsort1(ArrayList<Edge>[] graph, int curr, boolean visited[], Stack<Integer> stack) {
+    visited[curr] = true;
+    for(int i=0;i<graph[curr].size();i++){
+        Edge e=graph[curr].get(i);
+        if(!visited[e.dest]){
+            topsort1(graph, e.dest, visited, stack);
+        }
+    }
+    stack.push(curr);
+}
+    
+public static void main(String[] args) {
         int v=4;
         
         ArrayList<Edge>[] graph=new ArrayList[v];
@@ -142,19 +286,29 @@ public class Cycleundirected {
     //     if(!visited[i]){
     //         System.out.println(isCycleDirected(graph, i, visited, recStack));
     //topsort(graph, v);
-    System.out.println();
+   // System.out.println();
+   //dijkstra(graph, 0, v);
+    //bellmanFord(graph, 0, v);
+    primsmst(graph, v);
 
          }
     }
     //System.out.println(isCycleDirected(graph, 0, new boolean[v], new boolean[v]));
 
-   
+
         
 
     
 
 
     
+
+
+
+    
+
+
+
 
 
 
