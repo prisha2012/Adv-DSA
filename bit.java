@@ -1,4 +1,5 @@
-public class bit 
+public class bit {
+    
 public static void main(String[] args) {
     int n=5;
     int pos=2;
@@ -8,4 +9,5 @@ public static void main(String[] args) {
     }else{
         System.out.println("Bit is one");
     } 
+}
 }
